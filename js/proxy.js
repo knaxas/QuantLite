@@ -44,7 +44,7 @@ async function proxyChain(){
   return [
     ...(OWN_PROXY ? [OWN_PROXY] : []),
     ...(await localProxyReady ? [LOCAL_PROXY] : []),
-    ...pub
+    ...(OWN_PROXY ? [] : pub)
   ];
 }
 

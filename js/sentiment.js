@@ -162,7 +162,9 @@ function quickTake(A){
   const topBear = A.themes.filter(t => t.neg > 0.6).sort((a, b) => b.neg - a.neg)[0];
   const driver = A.score >= 12 ? topBull : A.score <= -12 ? topBear : null;
 
-  const parts = [`Die Nachrichtenlage zu ${name} ist ${TONE[A.label]}${driver ? `, getrieben vor allem von „${THEMES[driver.key].name}“` : ''}.`];
+  const parts = [A.articles.length
+    ? `Die Nachrichtenlage zu ${name} ist ${TONE[A.label]}${driver ? `, getrieben vor allem von „${THEMES[driver.key].name}“` : ''}.`
+    : `Zu ${name} wurden keine aktuellen Nachrichten gefunden – der Ausblick stützt sich nur auf Trend und Volatilität.`];
 
   const T = A.target;
   if (T) {
@@ -179,7 +181,9 @@ function quickTake(A){
 function summarize(A){
   const n = A.articles.length, q = A.quote;
 
-  let news = `${n} Artikel aus ${A.sources} Quellen ausgewertet – ${A.counts.bull} positiv, ${A.counts.bear} negativ, ${A.counts.neu} neutral.`;
+  let news = n
+    ? `${n} Artikel aus ${A.sources} Quellen ausgewertet – ${A.counts.bull} positiv, ${A.counts.bear} negativ, ${A.counts.neu} neutral.`
+    : 'Keine aktuellen Nachrichten gefunden. Das Sentiment ist daher neutral gewertet.';
   if (A.recentAvg != null && A.olderAvg != null) {
     const d = A.recentAvg - A.olderAvg;
     news += d > 0.08 ? ' Die Stimmung hat sich in den letzten 48 Stunden aufgehellt.'

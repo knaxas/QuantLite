@@ -10,21 +10,47 @@ function cleanCompanyName(name, sym){
   return n.length >= 2 ? n : base;
 }
 
+const FUND_RE = /\b(ETF|ETC|UCITS|MSCI|S&P|FTSE|STOXX|NASDAQ[- ]100|Index|Acc|Dist)\b/i;
+
+function isFund(name, sym){
+  return state.quotes[sym]?.type === 'ETF' || FUND_RE.test(name || '');
+}
+
+function fundTopic(name){
+  const t = (name || '').replace(/\(.*?\)/g, ' ')
+    .replace(/\b(iShares|Xtrackers|Vanguard|Amundi|SPDR|Lyxor|Invesco|WisdomTree|VanEck|HSBC|UBS|Core|Prime|UCITS|ETF|ETC|USD|EUR|Acc|Dist|Inc|Fund|Trust|Shares|plc)\b/gi, ' ')
+    .replace(/\s+/g, ' ').trim();
+  return t.length >= 3 ? t : name;
+}
+
 function newsQueries(name, sym){
   if (isCryptoSymbol(sym)) {
     const coin = (name || sym).replace(/\b(EUR|USD|USDT)\b/gi, '').trim() || sym.split('-')[0];
-    return {de: `"${coin}" Kurs Krypto`, en: `"${coin}" crypto price`};
+    return {de: [`"${coin}" Kurs Krypto`, `${coin} Kurs`], en: [`"${coin}" crypto price`, `${coin} crypto`]};
+  }
+  if (isFund(name, sym)) {
+    const topic = fundTopic(name);
+    return {de: [`"${topic}" ETF`, `${topic} ETF`, topic], en: [`"${topic}" ETF`, `${topic} ETF`]};
   }
   const clean = cleanCompanyName(name, sym);
-  return {de: `"${clean}" Aktie`, en: `"${clean}" stock`};
+  return {
+    de: [`"${clean}" Aktie`, `${clean.replace(/\s+/g, ' ')}-Aktie`, `${clean} Börse`],
+    en: [`"${clean}" stock`, `${clean} stock`, `${clean} shares`]
+  };
 }
 
-async function fetchNews(query, lang){
-  try {
-    const items = await fetchBingNews(query, lang);
-    if (items.length) return items;
-  } catch {}
-  return fetchGoogleNews(query, lang);
+async function fetchNews(queries, lang){
+  const list = Array.isArray(queries) ? queries : [queries];
+  let best = [];
+  for (const q of list) {
+    try {
+      const items = await fetchBingNews(q, lang);
+      if (items.length > best.length) best = items;
+      if (best.length >= 5) return best;
+    } catch {}
+  }
+  if (best.length || QL_CONFIG.proxyUrl) return best;
+  return fetchGoogleNews(list[0], lang);
 }
 
 function realBingLink(link){

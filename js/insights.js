@@ -50,7 +50,7 @@ async function analyzeSymbol(sym, step = () => {}){
     step(id, r.status === 'fulfilled' ? 'ok' : 'err', r.status === 'fulfilled' ? `${r.value.length} Artikel` : 'fehlgeschlagen');
   }
   const all = [...(rDe.value || []), ...(rEn.value || [])];
-  if (!all.length) throw new Error('Keine Artikel gefunden oder alle Proxys nicht erreichbar.');
+  if (rDe.status === 'rejected' && rEn.status === 'rejected') throw new Error('Nachrichten nicht erreichbar – bitte später erneut versuchen.');
 
   step('clean', 'run');
   const {articles} = dedupeArticles(all);
