@@ -1,0 +1,86 @@
+.appbar {
+  position: sticky; top: 0; z-index: 50;
+  height: var(--header-h);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: var(--safe-top) max(24px, env(safe-area-inset-right)) 0 max(24px, env(safe-area-inset-left));
+  background: rgba(13, 13, 15, 0.72);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 1px solid var(--border);
+}
+
+.brand { display: flex; align-items: center; gap: 12px; }
+.brand-mark {
+  width: 30px; height: 30px; border-radius: 8px;
+  display: grid; place-items: center;
+  background: linear-gradient(145deg, #2C2C30, #18181B);
+  border: 1px solid var(--border);
+  color: var(--green);
+}
+.brand-text { display: flex; flex-direction: column; line-height: 1.2; }
+.brand-name { font-size: 16px; font-weight: 600; letter-spacing: -0.02em; }
+.brand-sub  { font-size: 11.5px; color: var(--text-2); letter-spacing: 0.01em; }
+
+.appbar-right { display: flex; align-items: center; gap: 18px; }
+
+.appbar .seg-nav { position: absolute; left: 50%; transform: translateX(-50%); }
+.seg-nav button { padding: 5px 20px; }
+.market-status { display: flex; gap: 18px; font-size: 12.5px; color: var(--text-2); }
+.market { display: inline-flex; align-items: center; gap: 7px; }
+
+.dot { width: 6px; height: 6px; border-radius: 50%; background: var(--text-3); display: inline-block; flex-shrink: 0; transition: var(--t); }
+.dot.ok   { background: var(--green); }
+.dot.warn { background: var(--orange); }
+.dot.off  { background: var(--red); }
+
+.app {
+  display: grid;
+  grid-template-columns: var(--sidebar-w) minmax(0, 1fr);
+  min-height: calc(100vh - var(--header-h));
+}
+
+.sidebar {
+  position: sticky; top: var(--header-h);
+  height: calc(100vh - var(--header-h));
+  overflow-y: auto;
+  padding: 20px 12px 24px;
+  border-right: 1px solid var(--border);
+  background: rgba(24, 24, 27, 0.35);
+}
+
+.detail {
+  width: 100%; max-width: 1120px; min-width: 0;
+  margin: 0 auto;
+  padding: 36px 48px 32px;
+  display: flex; flex-direction: column; gap: 28px;
+}
+
+.footer {
+  margin-top: 12px; padding-top: 24px;
+  border-top: 1px solid var(--border);
+  display: flex; flex-direction: column; gap: 12px;
+  font-size: 12px; color: var(--text-3);
+}
+.footer .legal { color: var(--text-2); line-height: 1.65; max-width: 780px; }
+.footer .legal strong { color: var(--text); font-weight: 600; }
+.footer-meta { display: flex; flex-wrap: wrap; gap: 6px 22px; align-items: center; }
+.proxy { display: inline-flex; align-items: center; gap: 7px; }
+
+@media (max-width: 600px) {
+  .brand-text { display: none; }
+  .appbar .seg-nav { position: relative; left: auto; transform: none; }
+}
+@media (max-width: 900px) {
+  .appbar { padding: var(--safe-top) 16px 0; }
+  .market-status { display: none; }
+  .brand-sub { display: none; }
+  .seg-nav button { padding: 5px 14px; }
+  .app { grid-template-columns: 1fr; }
+  .sidebar {
+    position: static; height: auto;
+    border-right: none; border-bottom: 1px solid var(--border);
+    padding: 16px 8px;
+  }
+  .watchlist { max-height: 300px; overflow-y: auto; }
+  .detail { padding: 24px 16px; gap: 22px; }
+}
