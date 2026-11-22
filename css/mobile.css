@@ -1,0 +1,35 @@
+@media (max-width: 600px) {
+  .search input, .field input { font-size: 16px; }
+  .qh-title h1 { font-size: 24px; }
+  .qh-price { font-size: 34px; }
+  .qh-change { font-size: 15px; }
+  .quote-head .btn-primary { width: 100%; }
+  .chart-card { padding: 14px 10px 2px; }
+  .chart-toolbar .seg { max-width: 100%; overflow-x: auto; scrollbar-width: none; }
+  .chart-toolbar .seg::-webkit-scrollbar { display: none; }
+  .chart-wrap { height: 260px; }
+  .key-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .stat-value { white-space: normal; overflow-wrap: anywhere; font-size: 14px; }
+  .tldr, .sentiment-card, .target-card, .scan { padding-left: 18px; padding-right: 18px; }
+  .sent-score { font-size: 44px; }
+  .target-value { font-size: 34px; }
+  .seg-lg button { padding: 7px 8px; font-size: 12.5px; }
+  .brand-text { display: none; }
+  .appbar .seg-nav { position: relative; left: auto; transform: none; }
+
+  .dp-card { padding: 16px 6px 8px; }
+  .dp-row { gap: 10px; padding: 10px 8px; }
+  .dp-avatar { width: 32px; height: 32px; font-size: 11.5px; }
+  .dp-sub { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .dp-value { font-size: 14.5px; }
+  .dp-gain .gain-eur { display: none; }
+  .fc-row { flex-wrap: wrap; }
+  .fc-row .article-tag { margin: 0 0 0 42px; }
+  .alloc-legend li { grid-template-columns: 10px minmax(0, 1fr) auto; }
+  .alloc-val { display: none; }
+  .depot-grid { gap: 12px; }
+  .dp-class { display: flex; width: 100%; }
+  .dp-class button { flex: 1; }
+  #depotContent .quote-head .btn-primary { width: 100%; }
+  .sheet { padding: 22px 18px 18px; }
+}

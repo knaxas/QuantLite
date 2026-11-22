@@ -113,7 +113,9 @@ function drawCandles(candles, range){
       vertLine: {color: 'rgba(255,255,255,0.2)', labelBackgroundColor: '#3A3A3E'},
       horzLine: {color: 'rgba(255,255,255,0.2)', labelBackgroundColor: '#3A3A3E'}
     },
-    localization: {locale: 'de-DE', priceFormatter: p => fmtPx(p)}
+    localization: {locale: 'de-DE', priceFormatter: p => fmtPx(p)},
+    handleScroll: {vertTouchDrag: false, horzTouchDrag: true, mouseWheel: true, pressedMouseMove: true},
+    handleScale: {axisPressedMouseMove: false, axisDoubleClickReset: true, mouseWheel: true, pinch: true}
   });
   const cs = lwChart.addCandlestickSeries({upColor: COLORS.green, downColor: COLORS.red, borderVisible: false, wickUpColor: COLORS.green, wickDownColor: COLORS.red});
   cs.setData(candles.map(c => ({time: c.time, open: c.open, high: c.high, low: c.low, close: c.close})));

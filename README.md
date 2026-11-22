@@ -64,7 +64,8 @@ QuantLite/
 │   ├── watchlist.css     Seitenleiste mit Aktienliste
 │   ├── detail.css        Kurs-Header, Chart-Karte, Kennzahlen
 │   ├── insights.css      Tabs „KI-Prognose“ und „Alle Artikel“
-│   └── depot.css         Depot-Ansicht und Eingabe-Dialog
+│   ├── depot.css         Depot-Ansicht und Eingabe-Dialog
+│   └── mobile.css        Anpassungen für Handys (wird zuletzt geladen)
 │
 └── js/                   (Ladereihenfolge wie in index.html)
     ├── config.js         ← Einstellungen: proxyUrl = URL deines Cloudflare Workers

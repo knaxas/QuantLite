@@ -73,7 +73,10 @@ document.addEventListener('click', e => {
   if (t.closest('[data-potential-retry]')) { loadPotential(true); return; }
 
   const row = t.closest('.wl-item');
-  if (row?.dataset.sym && row.dataset.sym !== state.selected) select(row.dataset.sym);
+  if (row?.dataset.sym) {
+    if (row.dataset.sym !== state.selected) select(row.dataset.sym);
+    if (matchMedia('(max-width: 900px)').matches) $('.detail').scrollIntoView({behavior: 'smooth'});
+  }
 });
 
 $('.sidebar').addEventListener('keydown', e => {

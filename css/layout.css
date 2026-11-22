@@ -66,10 +66,6 @@
 .footer-meta { display: flex; flex-wrap: wrap; gap: 6px 22px; align-items: center; }
 .proxy { display: inline-flex; align-items: center; gap: 7px; }
 
-@media (max-width: 600px) {
-  .brand-text { display: none; }
-  .appbar .seg-nav { position: relative; left: auto; transform: none; }
-}
 @media (max-width: 900px) {
   .appbar { padding: var(--safe-top) 16px 0; }
   .market-status { display: none; }
@@ -81,6 +77,7 @@
     border-right: none; border-bottom: 1px solid var(--border);
     padding: 16px 8px;
   }
-  .watchlist { max-height: 300px; overflow-y: auto; }
+  .app { min-height: 0; align-content: start; }
+  .detail { scroll-margin-top: var(--header-h); }
   .detail { padding: 24px 16px; gap: 22px; }
 }

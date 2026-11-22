@@ -5,7 +5,7 @@ const DEPOT_RANGE_LABEL = {'5d': '1 Woche', '1mo': '1 Monat', '6mo': '6 Monate',
 const ALLOC_COLORS = ['#3987e5', '#d95926', '#199e70', '#c98500', '#d55181', '#9085e9'];
 const ALLOC_OTHER = '#636366';
 
-const fmtEur = v => v == null || isNaN(v) ? '—' : nf(2).format(v) + ' €';
+const fmtEur = v => v == null || isNaN(v) ? '—' : nf(2).format(v) + ' €';
 const fmtEurSigned = v => v == null || isNaN(v) ? '—' : (v > 0 ? '+' : '') + fmtEur(v);
 const parseNum = s => parseFloat(String(s).trim().replace(/\./g, (m, i, str) => /,/.test(str) ? '' : m).replace(',', '.'));
 
@@ -162,7 +162,7 @@ function positionRowHTML(r){
       </div>
       <div class="dp-val">
         ${r.ok
-          ? `<span class="dp-value">${fmtEur(r.value)}</span><span class="dp-gain ${cls(r.gain)}">${fmtEurSigned(r.gain)} · ${fmtPct(r.gainPct)}</span>`
+          ? `<span class="dp-value">${fmtEur(r.value)}</span><span class="dp-gain ${cls(r.gain)}"><span class="gain-eur">${fmtEurSigned(r.gain)} · </span>${fmtPct(r.gainPct)}</span>`
           : `<span class="sk" style="width:80px;height:15px"></span><span class="sk" style="width:110px;height:12px;margin-top:6px"></span>`}
       </div>
     </li>`;

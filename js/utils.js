@@ -9,7 +9,7 @@ const safeUrl = u => /^https?:\/\//i.test(u || '') ? u : '#';
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 const nf = (d = 2) => new Intl.NumberFormat('de-DE', {minimumFractionDigits: d, maximumFractionDigits: d});
 const fmtPx = v => v == null || isNaN(v) ? '—' : nf(Math.abs(v) < 1 && v !== 0 ? 4 : 2).format(v);
-const fmtPct = v => v == null || isNaN(v) ? '—' : (v > 0 ? '+' : '') + nf(2).format(v) + ' %';
+const fmtPct = v => v == null || isNaN(v) ? '—' : (v > 0 ? '+' : '') + nf(2).format(v) + ' %';
 const fmtSigned = v => v == null || isNaN(v) ? '—' : (v > 0 ? '+' : '') + fmtPx(v);
 const fmtBig = v => {
   if (v == null || isNaN(v)) return '—';
