@@ -7,6 +7,7 @@ function select(sym){
   store.set('ql_selected', sym);
   if (state.view !== 'markets') setView('markets');
   renderAll();
+  syncUrl();
   if (sym && !state.quotes[sym]?.ok) loadQuote(sym);
 }
 
@@ -134,10 +135,13 @@ document.fonts?.ready.then(() => $$('.seg').forEach(updateSeg));
 
 function init(){
   saveWatchlist();
+  const pending = applyRouteState(consumeRedirect());
   renderMarketStatus();
   setInterval(renderMarketStatus, 30000);
   renderAll();
   renderView();
+  syncUrl(true);
+  resolvePendingRoute(pending);
   loadAllQuotes();
   if (state.sideTab === 'trends') loadTrends();
   if (state.sideTab === 'potential') loadPotential();

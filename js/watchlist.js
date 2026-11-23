@@ -51,7 +51,7 @@ async function loadQuote(sym){
     if (!state.quotes[sym]?.ok) state.quotes[sym] = {ok: false, err: e.message};
   }
   renderWatchlist();
-  if (sym === state.selected) renderQuoteHead();
+  if (sym === state.selected) { renderQuoteHead(); updateTitle(); }
   if (state.view === 'depot' && getPosition(sym)) scheduleDepotRender();
 }
 const loadAllQuotes = () => Promise.all([...new Set([

@@ -102,10 +102,36 @@ function scoreText(text){
   return {total, hits};
 }
 
+const GENERIC_WORDS = new Set(['deutsche', 'international', 'interactive', 'technologies', 'technology', 'systems', 'holding', 'holdings',
+  'global', 'american', 'energy', 'financial', 'services', 'motors', 'industries', 'software', 'entertainment', 'communications',
+  'company', 'bank', 'world', 'core', 'group', 'aktie', 'stock', 'class', 'the', 'and', 'und', 'msci', 'index', 'crypto', 'coin']);
+const IRRELEVANT_WEIGHT = 0.3;
+const SCORE_SHRINK = 6;
+
+function relevanceKeys(name, sym){
+  const keys = new Set();
+  const base = sym.split(/[.\-=]/)[0].replace(/^\^/, '').toLowerCase();
+  if (base.length >= 2 && !/^\d+$/.test(base)) keys.add(base);
+  const source = isCryptoSymbol(sym) ? (name || '').replace(/\b(EUR|USD|USDT)\b/gi, '')
+    : isFund(name, sym) ? fundTopic(name) : cleanCompanyName(name, sym);
+  const clean = source.toLowerCase().replace(/\s+/g, ' ').trim();
+  if (clean.length >= 3) keys.add(clean);
+  for (const word of clean.split(/[\s\-&]+/)) {
+    if (word.length >= 4 && !GENERIC_WORDS.has(word)) keys.add(word);
+  }
+  return [...keys];
+}
+
+function mentions(text, keys){
+  const t = ' ' + text.toLowerCase() + ' ';
+  return keys.some(k => new RegExp(`(?<![\\p{L}\\p{N}])${reEsc(k)}(?![\\p{L}\\p{N}])`, 'u').test(t));
+}
+
 function analyze(articles, sym, name, quote){
   const now = Date.now();
   const themeAgg = {}; const kw = {};
-  let bullW = 0, bearW = 0, neuW = 0, recentSum = 0, recentW = 0, olderSum = 0, olderW = 0;
+  const keys = relevanceKeys(name, sym);
+  let bullW = 0, bearW = 0, neuW = 0, recentSum = 0, recentW = 0, olderSum = 0, olderW = 0, effective = 0;
 
   for (const a of articles) {
     const t = scoreText(a.title), d = scoreText(a.desc);
@@ -114,9 +140,12 @@ function analyze(articles, sym, name, quote){
     a.norm = Math.tanh(raw / 2.5);
     a.label = a.norm > 0.18 ? 'bull' : a.norm < -0.18 ? 'bear' : 'neu';
     a.hits = [...t.hits, ...d.hits];
+    a.relevant = !keys.length || mentions(a.title + ' ' + a.desc, keys);
+    const rel = a.relevant ? 1 : IRRELEVANT_WEIGHT;
+    effective += rel;
     const ageH = isNaN(a.date) ? 240 : Math.max(0, (now - a.date.getTime()) / 3.6e6);
     a.ageH = ageH;
-    const w = Math.exp(-ageH / 96) + 0.12;
+    const w = (Math.exp(-ageH / 96) + 0.12) * rel;
     if (a.label === 'bull') bullW += w * a.norm;
     else if (a.label === 'bear') bearW += w * -a.norm;
     else neuW += w;
@@ -131,7 +160,8 @@ function analyze(articles, sym, name, quote){
   }
 
   const denom = bullW + bearW + 0.35 * neuW;
-  const score = denom ? Math.round(clamp(100 * (bullW - bearW) / denom, -100, 100)) : 0;
+  const rawScore = denom ? clamp(100 * (bullW - bearW) / denom, -100, 100) : 0;
+  const score = Math.round(rawScore * effective / (effective + SCORE_SHRINK));
   const label = score >= 40 ? 'Stark Bullish' : score >= 12 ? 'Leicht Bullish' : score > -12 ? 'Neutral' : score > -40 ? 'Leicht Bearish' : 'Stark Bearish';
   const counts = {
     bull: articles.filter(a => a.label === 'bull').length,
@@ -139,7 +169,8 @@ function analyze(articles, sym, name, quote){
     neu:  articles.filter(a => a.label === 'neu').length
   };
   const agreement = (bullW + bearW) ? Math.abs(bullW - bearW) / (bullW + bearW) : 0;
-  const confidence = Math.round(100 * Math.min(1, articles.length / 40) * (0.45 + 0.55 * agreement));
+  const confidence = Math.round(100 * Math.min(1, effective / 25) * (0.45 + 0.55 * agreement));
+  const relevantCount = articles.filter(a => a.relevant).length;
   const recentAvg = recentW ? recentSum / recentW : null, olderAvg = olderW ? olderSum / olderW : null;
   const themes = Object.entries(themeAgg).map(([k, v]) => ({key: k, ...v, net: v.pos - v.neg, tot: v.pos + v.neg}))
     .sort((a, b) => b.tot - a.tot);
@@ -147,7 +178,7 @@ function analyze(articles, sym, name, quote){
   const sources = new Set(articles.map(a => a.source).filter(Boolean));
   const dates = articles.map(a => a.date).filter(d => !isNaN(d)).sort((a, b) => a - b);
 
-  return {sym, name, score, label, counts, confidence, recentAvg, olderAvg, themes, keywords, sources: sources.size,
+  return {sym, name, score, label, counts, confidence, relevantCount, recentAvg, olderAvg, themes, keywords, sources: sources.size,
     oldest: dates[0], newest: dates[dates.length - 1], last48: recentW, articles, quote, ts: new Date()};
 }
 
@@ -182,7 +213,7 @@ function summarize(A){
   const n = A.articles.length, q = A.quote;
 
   let news = n
-    ? `${n} Artikel aus ${A.sources} Quellen ausgewertet – ${A.counts.bull} positiv, ${A.counts.bear} negativ, ${A.counts.neu} neutral.`
+    ? `${n} Artikel aus ${A.sources} Quellen ausgewertet, davon ${A.relevantCount} direkt zum Unternehmen – ${A.counts.bull} positiv, ${A.counts.bear} negativ, ${A.counts.neu} neutral.`
     : 'Keine aktuellen Nachrichten gefunden. Das Sentiment ist daher neutral gewertet.';
   if (A.recentAvg != null && A.olderAvg != null) {
     const d = A.recentAvg - A.olderAvg;

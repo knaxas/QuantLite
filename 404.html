@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0D0D0F">
+<title>QuantLite</title>
+<script>
+(function () {
+  var roots = ['watchlist', 'trends', 'potenzial', 'depot', 'aktie'];
+  var parts = location.pathname.split('/');
+  var i = -1;
+  for (var k = 0; k < parts.length; k++) {
+    if (roots.indexOf(parts[k].toLowerCase()) >= 0) { i = k; break; }
+  }
+  var base;
+  if (i > 0) base = parts.slice(0, i).join('/') + '/';
+  else if (/\.github\.io$/.test(location.hostname) && parts[1]) base = '/' + parts[1] + '/';
+  else base = '/';
+  try {
+    if (i > 0) sessionStorage.setItem('ql_route', parts.slice(i).join('/') + location.search + location.hash);
+  } catch (e) {}
+  location.replace(base);
+})();
+</script>
+</head>
+<body style="background:#0D0D0F"></body>
+</html>

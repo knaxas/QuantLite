@@ -72,4 +72,5 @@ function setSideTab(tab){
   if (tab === 'trends') loadTrends();
   else if (tab === 'potential') loadPotential();
   else renderWatchlist();
+  syncUrl();
 }

@@ -64,7 +64,7 @@ async function analyzeSymbol(sym, step = () => {}){
   step('target', 'run');
   try {
     const qNow = state.quotes[sym];
-    A.target = computePriceTarget(await histP, qNow?.ok ? qNow.price : null, A.score);
+    A.target = computePriceTarget(await histP, qNow?.ok ? qNow.price : null, A.score, A.confidence);
     step('target', 'ok', `${fmtPx(A.target.target)} ${A.target.currency}`);
   } catch (e) {
     A.targetError = e.message;
@@ -186,7 +186,7 @@ function resultHTML(A){
   const verdictCls = A.score >= 12 ? 'bull' : A.score <= -12 ? 'bear' : 'neu';
   const T = A.target;
   const targetMethod = T
-    ? `<p class="method"><strong>Kursziel:</strong> Trend der letzten 2 Jahre ${fmtPct(T.muHist * 100)} p. a., gedämpft auf ${fmtPct(T.muTrend * 100)} p. a. (50 % Trend, 50 % Marktdurchschnitt von 7 %), Sentiment-Neigung ${fmtPct(T.muSent * 100)} p. a., Volatilität ${nf(1).format(T.sigma * 100)} % p. a. Die Spanne entspricht ±1 Standardabweichung (in etwa 2 von 3 Fällen liegt der Kurs historisch darin).</p>`
+    ? `<p class="method"><strong>Kursziel:</strong> Ausgangspunkt ist die langfristige Marktrendite von 7 % p. a. Der eigene Trend der letzten 2 Jahre (${fmtPct(T.muHist * 100)} p. a.) fließt nur zu ${nf(0).format(T.trendWeight * 100)} % ein, weil er statistisch stark schwankt. Dazu kommen 12-Monats-Momentum und – je nach Datenbasis – die Nachrichtenlage. Volatilität ${nf(1).format(T.sigma * 100)} % p. a.; die Spanne entspricht ±1 Standardabweichung. Im Backtest (${MODEL_STATS.cases} Prognosen, 24 Aktien, 8 Jahre) lag die Richtung in ${MODEL_STATS.direction} % der Fälle richtig und der Kurs in ${MODEL_STATS.inRange} % der Fälle innerhalb der Spanne.</p>`
     : '';
 
   return `<div class="fade-in" style="display:flex;flex-direction:column;gap:16px">
@@ -271,6 +271,7 @@ function targetHTML(A, title = 'Kursziel in 6 Monaten'){
         <span>${fmtPx(T.high)}</span>
       </div>
     </div>
+    ${T.drivers ? `<ul class="drivers">${T.drivers.filter(d => d.key === 'market' || Math.abs(d.pct) >= 0.05).map(d => `<li><span>${d.label}</span><span class="${d.key === 'market' ? '' : cls(d.pct)}">${fmtPct(d.pct)}</span></li>`).join('')}</ul>` : ''}
     <div class="target-foot">Erwartete Spanne bis ${until} · modellbasiert</div>
   </div>`;
 }

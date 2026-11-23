@@ -44,7 +44,7 @@ async function loadPotential(force = false){
   await Promise.all(syms.map(sym => limit(async () => {
     try {
       const hist = await fetchHistory(sym);
-      const T = computePriceTarget(hist, null, state.analyses[sym]?.score || 0);
+      const T = computePriceTarget(hist, null, state.analyses[sym]?.score || 0, state.analyses[sym]?.confidence || 0);
       const name = hist.meta?.longName || hist.meta?.shortName || displayName(sym);
       state.names[sym] ||= name;
       P.items.push({symbol: sym, name, upside: T.upside, target: T.target, price: T.price, currency: T.currency});

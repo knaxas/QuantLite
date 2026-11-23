@@ -157,3 +157,7 @@ a.article:hover .article-title { color: #fff; }
   .points, .disclosure { padding-left: 18px; padding-right: 18px; }
   .article-tag { display: none; }
 }
+
+.drivers { list-style: none; margin-top: 16px; display: flex; flex-direction: column; gap: 6px; }
+.drivers li { display: flex; justify-content: space-between; font-size: 12.5px; color: var(--text-2); }
+.drivers li span:last-child { font-weight: 500; }

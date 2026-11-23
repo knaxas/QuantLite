@@ -20,6 +20,14 @@ class Handler(http.server.SimpleHTTPRequestHandler):
     def do_GET(self):
         parsed = urllib.parse.urlparse(self.path)
         if parsed.path != "/proxy":
+            if not os.path.exists(self.translate_path(parsed.path)):
+                body = open("404.html", "rb").read()
+                self.send_response(404)
+                self.send_header("Content-Type", "text/html; charset=utf-8")
+                self.send_header("Content-Length", str(len(body)))
+                self.end_headers()
+                self.wfile.write(body)
+                return
             return super().do_GET()
         target = urllib.parse.parse_qs(parsed.query).get("url", [""])[0]
         t = urllib.parse.urlparse(target)

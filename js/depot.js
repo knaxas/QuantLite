@@ -97,6 +97,7 @@ function setDepotClass(c){
   store.set('ql_depot_class', c);
   renderDepot();
   renderDepotChart();
+  syncUrl();
 }
 
 function renderDepotSummary(V = valuation()){
@@ -291,6 +292,7 @@ function setView(view){
   state.view = view;
   store.set('ql_view', view);
   renderView();
+  syncUrl();
   const el = view === 'depot' ? $('#depotView') : $('#marketsView');
   el.classList.remove('fade-in'); void el.offsetWidth; el.classList.add('fade-in');
   window.scrollTo({top: 0});

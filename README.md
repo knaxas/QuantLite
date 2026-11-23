@@ -46,11 +46,38 @@ Vollbild – ohne Browser-Leiste, mit eigenem Icon:
 
 Voraussetzung: Die Seite läuft über **https** (z. B. GitHub Pages).
 
+## Direkte Links
+
+Jede Ansicht hat eine eigene Adresse, die man teilen oder als Lesezeichen speichern kann:
+
+| Adresse | Zeigt |
+|---|---|
+| `…/watchlist/nvda` | NVIDIA, Seitenleiste „Watchlist“ |
+| `…/trends/aapl` | Apple, Seitenleiste „Trends“ |
+| `…/potenzial/amd` | AMD, Seitenleiste „Potenzial“ |
+| `…/aktie/rheinmetall` | Sucht nach Name oder Ticker |
+| `…/depot`, `…/depot/aktien`, `…/depot/krypto` | Depot (gesamt / gefiltert) |
+
+Statt des Tickers funktioniert auch der Name (`/watchlist/nvidia`). GitHub Pages kennt keine
+Unterseiten – `404.html` leitet solche Adressen deshalb an die App weiter (`js/router.js`).
+
+## So entsteht die Prognose
+
+- **Sentiment:** Bing-News (DE + EN) werden mit einem Finanz-Lexikon bewertet. Artikel, die das
+  Unternehmen nicht erwähnen, zählen nur zu 30 %; bei wenigen Artikeln wird der Score zur Mitte gedämpft.
+- **Kursziel (6 Monate):** Marktdurchschnitt 7 % p. a. + eigener Trend (statistisch stark gedämpft)
+  + 12-Monats-Momentum + Nachrichtenlage (gewichtet nach Konfidenz). Spanne aus aktueller und
+  langfristiger Volatilität.
+- **Backtest** (24 Aktien, 8 Jahre, 1.888 Prognosen): Richtung in 64 % der Fälle richtig, Kurs in
+  69 % der Fälle innerhalb der Spanne. Das alte Modell lag bei 60 % – schlechter als einfach den
+  Marktdurchschnitt anzunehmen. Kursprognosen bleiben grundsätzlich unsicher.
+
 ## Projektstruktur
 
 ```
 QuantLite/
 ├── index.html            Seitengerüst (nur HTML, kein Inline-CSS/JS)
+├── 404.html              Leitet direkte Links (z. B. /watchlist/nvda) an die App weiter
 ├── manifest.json         Web-App-Manifest (Name, Farben, Icons)
 ├── icons/                App-Icons (SVG + PNG für Android/iOS)
 ├── start.py              Optional: lokaler Server + Proxy (nur für Entwicklung)
@@ -86,6 +113,7 @@ QuantLite/
     ├── depot.js          Virtuelles Depot (Bewertung in €, Aktien/Krypto, Verlauf)
     ├── depot-forecast.js Depot-Prognose: Ausblick, Signale, Empfehlungen
     ├── import.js         CSV-Import (Trade-Republic-Transaktionsexport)
+    ├── router.js         Adressen wie /watchlist/nvda ↔ App-Zustand
     └── app.js            Events, Börsenstatus, Start
 ```
 
@@ -99,6 +127,7 @@ QuantLite/
 | Texte der Prognose ändern             | `js/sentiment.js` (`THEMES`, `OUTLOOK`) |
 | Einen weiteren CORS-Proxy hinzufügen  | `js/proxy.js`        |
 | Kursziel-Modell anpassen              | `js/target.js` (Konstanten oben) |
+| Gewichtung irrelevanter Artikel       | `js/sentiment.js` (`IRRELEVANT_WEIGHT`, `SCORE_SHRINK`) |
 | Andere Trend-Listen anzeigen          | `js/trends.js` (`TREND_GROUPS`)  |
 | Aktien im Potenzial-Ranking ändern    | `js/potential.js` (`POTENTIAL_UNIVERSE`) |
 | Chart-Animation (Dauer) anpassen      | `js/linechart.js` (`LC_DURATION`) |
