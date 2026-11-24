@@ -72,17 +72,35 @@ Unterseiten – `404.html` leitet solche Adressen deshalb an die App weiter (`js
   69 % der Fälle innerhalb der Spanne. Das alte Modell lag bei 60 % – schlechter als einfach den
   Marktdurchschnitt anzunehmen. Kursprognosen bleiben grundsätzlich unsicher.
 
+## Push-Benachrichtigungen
+
+Kursalarme („NVIDIA über 170 €“) und starke Kursbewegungen (±5 % am Tag) kommen als echte
+Push-Nachricht aufs Handy – auch wenn die App geschlossen ist. Der Cloudflare Worker prüft dafür
+alle 10 Minuten die Kurse.
+
+**Einmalig in Cloudflare einrichten:**
+
+1. *Storage & Databases* → *KV* → *Create* → Name `quantlite`.
+2. Worker `quantlite-proxy` → *Settings* → *Bindings* → *Add* → *KV namespace* →
+   Variablenname **`QL_KV`**, Namespace `quantlite` → speichern.
+3. *Settings* → *Trigger events* → *Add* → *Cron Triggers* → `*/10 * * * *` → speichern.
+4. *Edit code* → Inhalt von `proxy/cloudflare-worker.js` einfügen → *Deploy*.
+
+**Auf dem iPhone:** QuantLite über *Teilen → Zum Home-Bildschirm* installieren, von dort öffnen,
+dann Zahnrad → *Push-Benachrichtigungen* einschalten und erlauben (ab iOS 16.4).
+
 ## Projektstruktur
 
 ```
 QuantLite/
 ├── index.html            Seitengerüst (nur HTML, kein Inline-CSS/JS)
 ├── 404.html              Leitet direkte Links (z. B. /watchlist/nvda) an die App weiter
+├── sw.js                 Service Worker: zeigt Push-Benachrichtigungen an
 ├── manifest.json         Web-App-Manifest (Name, Farben, Icons)
 ├── icons/                App-Icons (SVG + PNG für Android/iOS)
 ├── start.py              Optional: lokaler Server + Proxy (nur für Entwicklung)
 ├── proxy/
-│   └── cloudflare-worker.js   Eigener kostenloser Proxy für GitHub Pages
+│   └── cloudflare-worker.js   Eigener Proxy + Push-Server (Kursalarme per Cron) für GitHub Pages
 │
 ├── css/
 │   ├── base.css          Design-Tokens (Farben, Schrift, Radien), Reset
@@ -114,6 +132,7 @@ QuantLite/
     ├── depot-forecast.js Depot-Prognose: Ausblick, Signale, Empfehlungen
     ├── import.js         CSV-Import (Trade-Republic-Transaktionsexport)
     ├── router.js         Adressen wie /watchlist/nvda ↔ App-Zustand
+    ├── notifications.js  Einstellungen, Push an/aus, Kursalarme
     └── app.js            Events, Börsenstatus, Start
 ```
 

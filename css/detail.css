@@ -24,7 +24,8 @@
 .chart-wrap { position: relative; height: 360px; }
 .chart-host { position: absolute; inset: 0; transition: opacity 0.25s var(--ease); }
 .chart-host.loading { opacity: 0.55; }
-.lc-canvas { display: block; width: 100%; height: 100%; cursor: crosshair; touch-action: pan-y; }
+.lc-canvas { display: block; width: 100%; height: 100%; cursor: crosshair; touch-action: pan-y; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+.chart-wrap { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
 .chart-overlay {
   position: absolute; inset: 0; z-index: 2;
   display: grid; place-items: center;

@@ -114,6 +114,7 @@ $('#dpEditToggle').addEventListener('click', () => { state.depotEditing = !state
 $('#posForm').addEventListener('submit', e => { e.preventDefault(); submitPosition(); });
 $('#posSymbol').addEventListener('change', () => { posDialog.resolved = null; lookupPositionSymbol(); });
 $('#posDialog').addEventListener('click', e => { if (e.target === e.currentTarget) e.currentTarget.close(); });
+$('#settingsDialog').addEventListener('click', e => { if (e.target === e.currentTarget) e.currentTarget.close(); });
 $('#importFile').addEventListener('change', e => handleImportFile(e.target.files[0]));
 $('#importConfirm').addEventListener('click', confirmImport);
 
@@ -142,6 +143,7 @@ function init(){
   renderView();
   syncUrl(true);
   resolvePendingRoute(pending);
+  initNotifications();
   loadAllQuotes();
   if (state.sideTab === 'trends') loadTrends();
   if (state.sideTab === 'potential') loadPotential();

@@ -3,6 +3,8 @@
 const LC_SAMPLES = 240;
 const LC_DURATION = 700;
 const LC_PAD = {top: 30, bottom: 22, x: 6};
+const LC_HOLD_MS = 160;
+const LC_SLOP = 6;
 
 const lcEase = t => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 const lcLerp = (a, b, t) => a + (b - a) * t;
@@ -35,11 +37,15 @@ class AnimatedLineChart {
 
     this.ro = new ResizeObserver(() => this.resize());
     this.ro.observe(host);
-    this.canvas.addEventListener('pointermove', e => this.onPointer(e));
-    this.canvas.addEventListener('pointerdown', e => this.onPointer(e));
-    this.canvas.addEventListener('pointerleave', () => this.clearHover());
-    this.canvas.addEventListener('pointerup', e => { if (e.pointerType !== 'mouse') this.clearHover(); });
-    this.canvas.addEventListener('pointercancel', () => this.clearHover());
+    const mouse = e => e.pointerType === 'mouse';
+    this.canvas.addEventListener('pointermove', e => { if (mouse(e)) this.scrubAt(e.clientX); });
+    this.canvas.addEventListener('pointerdown', e => { if (mouse(e)) this.scrubAt(e.clientX); });
+    this.canvas.addEventListener('pointerleave', e => { if (mouse(e)) this.clearHover(); });
+    this.canvas.addEventListener('touchstart', e => this.onTouchStart(e), {passive: true});
+    this.canvas.addEventListener('touchmove', e => this.onTouchMove(e), {passive: false});
+    this.canvas.addEventListener('touchend', () => this.endTouch());
+    this.canvas.addEventListener('touchcancel', () => this.endTouch());
+    this.canvas.addEventListener('contextmenu', e => e.preventDefault());
     this.resize();
   }
 
@@ -95,11 +101,43 @@ class AnimatedLineChart {
   }
   yAt(normVal){ return LC_PAD.top + (1 - normVal) * (this.h - LC_PAD.top - LC_PAD.bottom); }
 
-  onPointer(e){
+  onTouchStart(e){
+    clearTimeout(this.holdTimer);
+    if (e.touches.length !== 1) { this.endTouch(); return; }
+    const t = e.touches[0];
+    this.touch = {x: t.clientX, y: t.clientY, mode: null};
+    this.holdTimer = setTimeout(() => {
+      if (this.touch && !this.touch.mode) { this.touch.mode = 'scrub'; this.scrubAt(this.touch.x); }
+    }, LC_HOLD_MS);
+  }
+
+  onTouchMove(e){
+    const T = this.touch;
+    if (!T) return;
+    const t = e.touches[0];
+    if (!T.mode) {
+      const dx = Math.abs(t.clientX - T.x), dy = Math.abs(t.clientY - T.y);
+      if (dx < LC_SLOP && dy < LC_SLOP) return;
+      clearTimeout(this.holdTimer);
+      T.mode = dx >= dy ? 'scrub' : 'scroll';
+    }
+    if (T.mode === 'scrub') {
+      e.preventDefault();
+      this.scrubAt(t.clientX);
+    }
+  }
+
+  endTouch(){
+    clearTimeout(this.holdTimer);
+    this.touch = null;
+    this.clearHover();
+  }
+
+  scrubAt(clientX){
     if (!this.data || this.animating) return;
     const r = this.canvas.getBoundingClientRect();
     const n = this.data.points.length;
-    const rel = (e.clientX - r.left - LC_PAD.x) / (this.w - 2 * LC_PAD.x);
+    const rel = (clientX - r.left - LC_PAD.x) / (this.w - 2 * LC_PAD.x);
     const idx = Math.round(clamp(rel, 0, 1) * (n - 1));
     if (idx === this.hover) return;
     this.hover = idx;

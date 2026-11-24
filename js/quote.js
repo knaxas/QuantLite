@@ -29,7 +29,8 @@ function renderQuoteHead(){
 
   const links = [
     getItem(sym) ? '' : `<button class="text-btn qh-add" data-add-wl="${esc(sym)}">+ Watchlist</button>`,
-    `<button class="text-btn qh-add" data-add-depot="${esc(sym)}">+ Depot</button>`
+    `<button class="text-btn qh-add" data-add-depot="${esc(sym)}">+ Depot</button>`,
+    `<button class="text-btn qh-add" data-add-alert="${esc(sym)}">+ Alarm</button>`
   ].filter(Boolean).join(' · ');
 
   box.innerHTML = `

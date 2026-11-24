@@ -33,3 +33,9 @@
   #depotContent .quote-head .btn-primary { width: 100%; }
   .sheet { padding: 22px 18px 18px; }
 }
+
+@media (max-width: 600px) {
+  .alert-form input, .alert-form select { font-size: 16px; }
+  .alert-form-row { flex-wrap: wrap; }
+  .alert-form-row .btn-primary { width: 100%; }
+}

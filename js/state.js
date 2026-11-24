@@ -50,8 +50,9 @@ if (!['all', 'stocks', 'crypto'].includes(state.depotClass)) state.depotClass = 
 state.depot = state.depot.filter(p => p && p.symbol && p.shares > 0);
 if (!state.watchlist.some(w => w.symbol === state.selected)) state.selected = state.watchlist[0]?.symbol || null;
 
-const saveWatchlist = () => store.set('ql_watchlist', state.watchlist);
-const saveDepot = () => store.set('ql_depot', state.depot);
+const syncPushSymbols = () => { if (typeof schedulePushSync === 'function') schedulePushSync(); };
+const saveWatchlist = () => { store.set('ql_watchlist', state.watchlist); syncPushSymbols(); };
+const saveDepot = () => { store.set('ql_depot', state.depot); syncPushSymbols(); };
 const isCryptoSymbol = sym => /-(EUR|USD|USDT|BTC)$/.test(sym || '') || state.quotes[sym]?.type === 'CRYPTOCURRENCY';
 const getPosition = sym => state.depot.find(p => p.symbol === sym);
 const getItem = sym => state.watchlist.find(w => w.symbol === sym);
