@@ -20,9 +20,13 @@ async function pushCall(path, body){
   const res = await fetch(pushApi() + path, body
     ? {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(body)}
     : undefined);
-  const data = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(data.error || 'HTTP ' + res.status);
-  return data;
+  const text = await res.text();
+  let data = {};
+  try { data = JSON.parse(text); } catch {}
+  if (res.ok) return data;
+  if (res.status === 400 && text.includes('?url=')) throw new Error('Der Cloudflare Worker ist noch auf dem alten Stand. Bitte den neuen Code aus proxy/cloudflare-worker.js einfügen und auf „Deploy“ klicken.');
+  if (res.status === 501) throw new Error('Im Cloudflare Worker fehlt der KV-Speicher. Bitte unter Settings → Bindings einen KV-Namespace mit dem Namen QL_KV verbinden.');
+  throw new Error(data.error || 'HTTP ' + res.status);
 }
 
 function saveAlertsLocal(){
