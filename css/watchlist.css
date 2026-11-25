@@ -66,3 +66,16 @@
 .wl-badge.flat { color: var(--text-2); }
 
 .wl-empty { padding: 32px 16px; text-align: center; color: var(--text-2); font-size: 13.5px; line-height: 1.6; }
+
+.tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin: 0 4px 16px; }
+.tile {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 2px;
+  padding: 10px 12px; border-radius: var(--r-md);
+  background: var(--surface); border: 1px solid var(--border);
+  text-align: left; transition: var(--t); min-width: 0;
+}
+.tile:hover { background: var(--surface-2); }
+.tile.active { border-color: rgba(10, 132, 255, 0.5); }
+.tile-name { font-size: 12px; color: var(--text-2); font-weight: 500; }
+.tile-price { font-size: 15px; font-weight: 600; letter-spacing: -0.01em; }
+.tile-chg { font-size: 12.5px; font-weight: 500; }

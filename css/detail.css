@@ -53,3 +53,12 @@
   .chart-wrap { height: 280px; }
   .chart-card { padding: 16px 14px 4px; }
 }
+
+.qh-name-row { display: flex; align-items: center; gap: 6px; }
+.share-btn { color: var(--blue); flex-shrink: 0; }
+.share-btn:hover { color: var(--blue); background: var(--blue-soft); }
+.detail-bar { display: none; }
+.detail-back {
+  display: inline-flex; align-items: center; gap: 6px;
+  color: var(--blue); font-size: 16px; padding: 4px 4px 4px 0;
+}

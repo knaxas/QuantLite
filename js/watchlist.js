@@ -52,12 +52,14 @@ async function loadQuote(sym){
   }
   renderWatchlist();
   if (sym === state.selected) { renderQuoteHead(); updateTitle(); }
+  if (tileSymbols().includes(sym)) renderMarketTiles();
   if (state.view === 'depot' && getPosition(sym)) scheduleDepotRender();
 }
 const loadAllQuotes = () => Promise.all([...new Set([
   ...state.watchlist.map(w => w.symbol),
   ...state.depot.map(p => p.symbol),
-  ...(state.selected ? [state.selected] : [])
+  ...(state.selected ? [state.selected] : []),
+  ...tileSymbols()
 ])].map(loadQuote));
 
 async function resolveSymbol(input){

@@ -29,6 +29,7 @@ const state = {
   depotPeriod: null,
   fx:        {},
   tab:       'insights',
+  showDetail: true,
   trends:    null,
   trendsLoading: false,
   names:     {},
@@ -56,4 +57,4 @@ const saveDepot = () => { store.set('ql_depot', state.depot); syncPushSymbols();
 const isCryptoSymbol = sym => /-(EUR|USD|USDT|BTC)$/.test(sym || '') || state.quotes[sym]?.type === 'CRYPTOCURRENCY';
 const getPosition = sym => state.depot.find(p => p.symbol === sym);
 const getItem = sym => state.watchlist.find(w => w.symbol === sym);
-const displayName = sym => getItem(sym)?.name || getPosition(sym)?.name || state.quotes[sym]?.name || state.names[sym] || sym;
+const displayName = sym => (sym?.startsWith('^') && state.names[sym]) || getItem(sym)?.name || getPosition(sym)?.name || state.quotes[sym]?.name || state.names[sym] || sym;

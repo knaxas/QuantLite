@@ -12,6 +12,8 @@ function select(sym){
 }
 
 function renderAll(){
+  renderScreen();
+  renderMarketTiles();
   renderSidebar();
   renderWatchlist();
   renderTrends();
@@ -65,7 +67,7 @@ document.addEventListener('click', e => {
   const pos = t.closest('.dp-row');
   if (pos) {
     if (state.depotEditing) openPositionDialog(pos.dataset.pos, 'edit');
-    else select(pos.dataset.pos);
+    else openDetail(pos.dataset.pos);
     return;
   }
 
@@ -74,10 +76,15 @@ document.addEventListener('click', e => {
   if (t.closest('[data-potential-retry]')) { loadPotential(true); return; }
 
   const row = t.closest('.wl-item');
-  if (row?.dataset.sym) {
-    if (row.dataset.sym !== state.selected) select(row.dataset.sym);
-    if (matchMedia('(max-width: 900px)').matches) $('.detail').scrollIntoView({behavior: 'smooth'});
-  }
+  if (row?.dataset.sym) { openDetail(row.dataset.sym); return; }
+
+  const tile = t.closest('[data-tile]');
+  if (tile) { openDetail(tile.dataset.tile); return; }
+
+  if (t.closest('[data-detail-back]')) { closeDetail(); return; }
+
+  const share = t.closest('[data-share]');
+  if (share) { shareStock(share.dataset.share); return; }
 });
 
 $('.sidebar').addEventListener('keydown', e => {

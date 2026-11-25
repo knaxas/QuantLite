@@ -55,7 +55,7 @@ Jede Ansicht hat eine eigene Adresse, die man teilen oder als Lesezeichen speich
 | `…/watchlist/nvda` | NVIDIA, Seitenleiste „Watchlist“ |
 | `…/trends/aapl` | Apple, Seitenleiste „Trends“ |
 | `…/potenzial/amd` | AMD, Seitenleiste „Potenzial“ |
-| `…/aktie/rheinmetall` | Sucht nach Name oder Ticker |
+| `…/aktie/rheinmetall` | Sucht nach Name oder Ticker (diesen Link erzeugt auch „Teilen“) |
 | `…/depot`, `…/depot/aktien`, `…/depot/krypto` | Depot (gesamt / gefiltert) |
 
 Statt des Tickers funktioniert auch der Name (`/watchlist/nvidia`). GitHub Pages kennt keine
@@ -132,6 +132,7 @@ QuantLite/
     ├── depot-forecast.js Depot-Prognose: Ausblick, Signale, Empfehlungen
     ├── import.js         CSV-Import (Trade-Republic-Transaktionsexport)
     ├── router.js         Adressen wie /watchlist/nvda ↔ App-Zustand
+    ├── overview.js       Markt-Kacheln, Handy-Übersicht/Detail, Teilen
     ├── notifications.js  Einstellungen, Push an/aus, Kursalarme
     └── app.js            Events, Börsenstatus, Start
 ```

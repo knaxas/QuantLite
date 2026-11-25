@@ -65,6 +65,7 @@
       <input id="addInput" placeholder="Aktie hinzufügen" aria-label="Aktie per Ticker oder Name hinzufügen">
       <span class="spinner" id="addSpinner" hidden></span>
     </form>
+    <div class="tiles" id="marketTiles"></div>
     <div class="seg seg-full" id="sideSeg">
       <span class="seg-thumb"></span>
       <button data-side="watchlist">Watchlist</button><button data-side="trends">Trends</button><button data-side="potential">Potenzial</button>
@@ -96,6 +97,12 @@
   </aside>
 
   <main class="detail">
+    <div class="detail-bar">
+      <button class="detail-back" data-detail-back>
+        <svg width="12" height="20" viewBox="0 0 12 20" fill="none"><path d="M10 2 2 10l8 8" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span id="detailBackLabel">Watchlist</span>
+      </button>
+    </div>
 
     <section class="quote-head" id="quoteHead"></section>
 
@@ -271,6 +278,7 @@
 <script src="js/depot-forecast.js"></script>
 <script src="js/import.js"></script>
 <script src="js/router.js"></script>
+<script src="js/overview.js"></script>
 <script src="js/notifications.js"></script>
 <script src="js/app.js"></script>
 </body>

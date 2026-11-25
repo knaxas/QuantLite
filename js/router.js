@@ -21,7 +21,8 @@ function routePath(){
     return 'depot' + (c ? '/' + c : '');
   }
   const side = SIDE_TO_ROUTE[state.sideTab] || 'watchlist';
-  return state.selected ? `${side}/${encodeURIComponent(state.selected.toLowerCase())}` : side;
+  const withStock = state.selected && (!isMobile() || state.showDetail);
+  return withStock ? `${side}/${encodeURIComponent(state.selected.toLowerCase())}` : side;
 }
 
 function updateTitle(){
@@ -72,6 +73,7 @@ function applyRouteState(path){
   }
   if (ROUTE_TO_SIDE[root]) state.sideTab = ROUTE_TO_SIDE[root];
   if (root) state.view = 'markets';
+  state.showDetail = !!arg;
   if (!arg) return null;
   const sym = findKnownSymbol(arg);
   if (sym) { state.selected = sym; return null; }
@@ -84,6 +86,7 @@ async function resolvePendingRoute(arg){
     const {sym, name} = await resolveSymbol(arg);
     if (name) state.names[sym] ||= name;
     routing = true;
+    state.showDetail = true;
     select(sym);
   } catch {
     toast(`„${arg}“ wurde nicht gefunden.`, 'err');

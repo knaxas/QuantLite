@@ -39,3 +39,19 @@
   .alert-form-row { flex-wrap: wrap; }
   .alert-form-row .btn-primary { width: 100%; }
 }
+
+@media (max-width: 900px) {
+  body.m-list .detail { display: none; }
+  body.m-detail .sidebar { display: none; }
+  body.m-list .sidebar { border-bottom: none; padding-top: 18px; }
+  body.m-detail .detail-bar {
+    display: flex; position: sticky; top: var(--header-h); z-index: 20;
+    margin: -24px -16px 0; padding: 10px 16px;
+    background: rgba(13, 13, 15, 0.85);
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+  }
+  body.m-detail .detail { animation: fadeIn 0.3s var(--ease) both; }
+  .tiles { margin: 0 4px 18px; }
+  .wl-item { padding: 14px 12px; }
+}

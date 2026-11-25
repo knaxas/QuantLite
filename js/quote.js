@@ -36,7 +36,12 @@ function renderQuoteHead(){
   box.innerHTML = `
     <div class="qh-main">
       <div class="qh-title">
-        <h1>${esc(name)}</h1>
+        <div class="qh-name-row">
+          <h1>${esc(name)}</h1>
+          <button class="icon-btn share-btn" data-share="${esc(sym)}" title="Teilen" aria-label="${esc(name)} teilen">
+            <svg width="18" height="18" viewBox="0 0 20 20" fill="none"><path d="M10 2.5v10M6.5 6 10 2.5 13.5 6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M6.5 9H5.5a1.5 1.5 0 0 0-1.5 1.5v5A1.5 1.5 0 0 0 5.5 17h9a1.5 1.5 0 0 0 1.5-1.5v-5A1.5 1.5 0 0 0 14.5 9h-1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          </button>
+        </div>
         <span class="qh-meta">${esc(sym)}${q?.exchange ? ' · ' + esc(q.exchange) : ''} · ${links}</span>
       </div>
       ${price}
